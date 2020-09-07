@@ -2,10 +2,17 @@ class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!, except: [:index]
 
+  def user_events
+    @upcoming_events = upcoming_events(current_user)
+    @previous_events = previous_events(current_user)
+    # @invitations = invitations(current_user)
+  end
+
   # GET /events
   # GET /events.json
   def index
-    @events = Event.all
+    @upcoming_events = Event.where("date > ?", Time.now).order(:date)
+    @previous_events = Event.where("date < ?", Time.now).first(10)
   end
 
   # GET /events/1
@@ -16,6 +23,7 @@ class EventsController < ApplicationController
   # GET /events/new
   def new
     @event = Event.new
+    @users = User.all
   end
 
   # GET /events/1/edit
@@ -25,10 +33,14 @@ class EventsController < ApplicationController
   # POST /events
   # POST /events.json
   def create
-    @event = Event.new(event_params)
+    @event = current_user.events.build(event_params)
 
     respond_to do |format|
       if @event.save
+        params[:event][:attendee_ids].each do |attendee_id|
+          EventAttendee.new(event_id: @event.id, attendee_id: attendee_id).save
+        end
+
         format.html { redirect_to @event, notice: 'Event was successfully created.' }
         format.json { render :show, status: :created, location: @event }
       else
@@ -43,6 +55,11 @@ class EventsController < ApplicationController
   def update
     respond_to do |format|
       if @event.update(event_params)
+        # Update attendees???
+      #   params[:event][:attendee_ids].each do |attendee_id|
+      #     EventAttendee.new(event_id: @event.id, attendee_id: attendee_id).save
+      #   end
+
         format.html { redirect_to @event, notice: 'Event was successfully updated.' }
         format.json { render :show, status: :ok, location: @event }
       else
@@ -70,6 +87,18 @@ class EventsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def event_params
-      params.fetch(:event, {})
+      params.require(:event).permit(:name_event, :promotion, :description, :time, :date, :localtion)
     end
+
+    def upcoming_events(user)
+      user.events.where("date > ?", Time.now).order(:date)
+    end
+
+    def previous_events(user)
+      user.events.where("date < ?", Time.now)
+    end
+
+    # def invitations(user)
+    #   user.event_attendees
+    # end
 end

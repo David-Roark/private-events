@@ -6,12 +6,31 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
+    <% if flash[:notice] %>
+      <div class="notification is-primary global-notification">
+        <p class="notice"><%= notice %></p>
+      </div>
+    <% end %>
+
+    <% if flash[:alert] %>
+      <div class="notification is-danger global-notification">
+        <p class="notice"><%= alert %></p>
+      </div>
+    <% end %>
+
+    <% if user_signed_in? %>
+      <%= link_to 'New Event', new_event_path %>
+      <%= link_to 'Log out', destroy_user_session_path, method: 'delete' %>
+    <% else %>
+      <%= link_to 'Log in', new_user_session_path %>
+      <%= link_to 'Sign up', new_user_registration_path  %>
+    <% end %>
+    
     <%= yield %>
   </body>
 </html>

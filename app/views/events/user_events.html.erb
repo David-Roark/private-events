@@ -1,0 +1,23 @@
+<h1>My Events</h1>
+
+<h2>Upcoming events(<%= @upcoming_events.size %>)</h2>
+<% unless @upcoming_events.present? %>
+  <p>No upcoming events</p>
+<% else %>
+  <% @upcoming_events.each do |event| %>
+    <%= 'My event' if event.creator == current_user %>
+    <% @event = event %>
+    <%= render 'event_card', local: {event: @event} %>
+  <% end %>
+<% end %>
+<hr>
+<h2>Previous events(<%= @previous_events.size %>) </h2>
+<% unless @previous_events.present? %>
+  <p>No previous events</p>
+<% else %>
+  <% @previous_events.each do |event| %>
+    <% @event = event %>
+    <%= render 'event_card', local: {event: @event} %>
+  <br>
+  <% end %>
+<% end %>

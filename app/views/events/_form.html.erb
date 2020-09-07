@@ -1,4 +1,4 @@
-<%= form_with(model: event, local: true) do |form| %>
+<%= form_with(model: event, local: true) do |f| %>
   <% if event.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(event.errors.count, "error") %> prohibited this event from being saved:</h2>
@@ -10,8 +10,26 @@
       </ul>
     </div>
   <% end %>
-
+<label for="name_event">Name event</label>
+  <%= f.text_field :name_event , label: 'Name event' %> <br>
+  <label for="promotion">Promotion</label>
+  <%= f.text_field :promotion  %> <br>
+  <label for="description">Description</label>
+  <%= f.text_area :description  %> <br>
+  <label for="time">Time</label>
+  <%= f.time_field :time %> <br>
+  <label for="date">Date</label>
+  <%= f.date_field :date, min: Time.now %> <br>
+  <label for="localtion">Location</label>
+  <%= f.text_field :localtion  %> <br>
+  <label for="attendee_ids">Attendees</label>
+  <% if event.attendees %>
+  <%# Update Attendees??? %>
+    <%# f.collection_check_boxes :attendee_ids, User.all, :id, :username %> <br>
+  <% else %>
+    <%= f.collection_check_boxes :attendee_ids, @users, :id, :username %> <br>
+  <% end %>
   <div class="actions">
-    <%= form.submit %>
+    <%= f.submit %>
   </div>
 <% end %>
