@@ -12,7 +12,7 @@
       <p> <strong>Date:</strong> <%= @event.date %></p>
       <p> <strong>Location:</strong> <%= @event.localtion %></p>
       <p> <strong>Attendees:</strong> <% @event.attendees.each do |attendee| %>
-                     <%= attendee.username + ', ' %>
+                     <%= link_to attendee.username, "/user/events/#{attendee.id}" %>
                    <% end %>
       </p>
     </div>

@@ -6,7 +6,7 @@ class EventsController < ApplicationController
     user = User.find(params[:id])
     @upcoming_events = upcoming_events(user)
     @previous_events = previous_events(user)
-    @invited_events = invited_events(user)
+    @invited_events = user.invited_events
     @user = user
   end
 
@@ -100,9 +100,5 @@ class EventsController < ApplicationController
 
     def previous_events(user)
       user.events.where("date < ?", Time.now)
-    end
-
-    def invited_events(user)
-      user.invited_events
     end
 end
