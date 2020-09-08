@@ -1,23 +1,54 @@
-<h1>My Events</h1>
+<div class="columns">
+  <div class="column">
+    <nav class="level">
+      <div class="level-item has-text-centered">
+        <h1 class='title is-3'>Upcoming Events</h1>
+      </div>
+    </nav>
+    <% unless @upcoming_events.present? %>
+      <p>Let's create a party now! <%= link_to 'New event' %></p>
+    <% else %>
+      <% @upcoming_events.each do |event| %>
+        <% @event = event %>
+        <%= render 'event_card', local: {event: @event} %>
+        <br>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="column">
+    <nav class="level">
+      <div class="level-item has-text-centered">
+        <h1 class='title is-3'>Previous Events</h1>
+      </div>
+    </nav>
+    <% unless @previous_events.present? %>
+      <p><%= current_user == @user ? 'You have not missed any event!' : "#{@user.username} don't have any previous event"%></p>
+    <% else %>
+      <% @previous_events.each do |event| %>
+        <% @event = event %>
+        <%= render 'event_card', local: {event: @event} %>
+        <br>
+      <% end %>
+    <% end %>
+  </div>
 
-<h2>Upcoming events(<%= @upcoming_events.size %>)</h2>
-<% unless @upcoming_events.present? %>
-  <p>No upcoming events</p>
-<% else %>
-  <% @upcoming_events.each do |event| %>
-    <%= 'My event' if event.creator == current_user %>
-    <% @event = event %>
-    <%= render 'event_card', local: {event: @event} %>
+  <% if current_user == @user %>
+  <div class="column">
+    <nav class="level">
+      <div class="level-item has-text-centered">
+        <h1 class='title is-3'>Invited event</h1>
+      </div>
+    </nav>
+    <% unless @invited_events.present? %>
+      <p>You have not missed any event!</p>
+    <% else %>
+      <% @invited_events.each do |event| %>
+        <% @event = event %>
+        <%= render 'event_card', local: {event: @event} %>
+        <br>
+      <% end %>
+    <% end %>
+  </div>
   <% end %>
-<% end %>
-<hr>
-<h2>Previous events(<%= @previous_events.size %>) </h2>
-<% unless @previous_events.present? %>
-  <p>No previous events</p>
-<% else %>
-  <% @previous_events.each do |event| %>
-    <% @event = event %>
-    <%= render 'event_card', local: {event: @event} %>
-  <br>
-  <% end %>
-<% end %>
+
+</div>

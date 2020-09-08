@@ -1,12 +1,60 @@
-<h1>Events</h1>
+<div class="columns">
+  <div class="column">
+    <nav class="level">
+      <div class="level-item has-text-centered">
+        <h1 class='title is-3'>Upcoming Events</h1>
+      </div>
+    </nav>
+    <% unless @upcoming_events.present? %>
+      <p>Let's create a party now!</p>
+    <% else %>
+      <% @upcoming_events.each do |event| %>
+        <% @event = event %>
+        <%= render 'event_card', local: {event: @event} %>
+        <br>
+      <% end %>
+    <% end %>
+  </div>
 
-<h3>Upcoming Events</h3>
-<% @upcoming_events.each do |event| %>
-  <% @event = event %>
-  <%= render 'event_card', local: {event: @event} %>
-<% end %>
-<h3>Previous Events</h3>
-<% @previous_events.each do |event| %>
-  <% @event = event %>
-  <%= render 'event_card', local: {event: @event} %>
-<% end %>
+  <div class="column">
+    <nav class="level">
+      <div class="level-item has-text-centered">
+        <h1 class='title is-3'>Previous Events</h1>
+      </div>
+    </nav>
+    <% unless @previous_events.present? %>
+      <p>You have not missed any event!</p>
+    <% else %>
+      <% @previous_events.each do |event| %>
+        <% @event = event %>
+        <%= render 'event_card', local: {event: @event} %>
+        <br>
+      <% end %>
+    <% end %>
+
+  </div>
+
+  <div class="column is-one-fifth">
+    <nav class="level">
+      <div class="level-item has-text-centered">
+        <h1 class='title is-3'>Friends</h1>
+      </div>
+    </nav>
+    <div class="">
+      <% @friends.each do |friend| %>
+        <% unless friend == current_user %>
+        <div class="media">
+          <div class="media-left">
+            <figure class="image is-32x32">
+              <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+            </figure>
+          </div>
+          <div class="media-content">
+            <%= link_to "@#{friend.username}","/user/events/#{friend.id}" %>
+          </div>
+        </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

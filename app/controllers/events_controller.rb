@@ -3,16 +3,19 @@ class EventsController < ApplicationController
   before_action :authenticate_user!, except: [:index]
 
   def user_events
-    @upcoming_events = upcoming_events(current_user)
-    @previous_events = previous_events(current_user)
-    # @invitations = invitations(current_user)
+    user = User.find(params[:id])
+    @upcoming_events = upcoming_events(user)
+    @previous_events = previous_events(user)
+    @invited_events = invited_events(user)
+    @user = user
   end
 
   # GET /events
   # GET /events.json
   def index
     @upcoming_events = Event.where("date > ?", Time.now).order(:date)
-    @previous_events = Event.where("date < ?", Time.now).first(10)
+    @previous_events = Event.where("date < ?", Time.now)
+    @friends = User.all
   end
 
   # GET /events/1
@@ -38,10 +41,11 @@ class EventsController < ApplicationController
     respond_to do |format|
       if @event.save
         params[:event][:attendee_ids].each do |attendee_id|
-          EventAttendee.new(event_id: @event.id, attendee_id: attendee_id).save
+          unless attendee_id == current_user.id.to_s
+            EventAttendee.new(event_id: @event.id, attendee_id: attendee_id).save
+          end
         end
-
-        format.html { redirect_to @event, notice: 'Event was successfully created.' }
+        format.html { redirect_to "/user/events/#{current_user.id}", notice: 'Event was successfully created.' }
         format.json { render :show, status: :created, location: @event }
       else
         format.html { render :new }
@@ -98,7 +102,7 @@ class EventsController < ApplicationController
       user.events.where("date < ?", Time.now)
     end
 
-    # def invitations(user)
-    #   user.event_attendees
-    # end
+    def invited_events(user)
+      user.invited_events
+    end
 end

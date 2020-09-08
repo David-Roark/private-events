@@ -8,6 +8,7 @@
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
 
   <body>
@@ -23,14 +24,58 @@
       </div>
     <% end %>
 
-    <% if user_signed_in? %>
-      <%= link_to 'New Event', new_event_path %>
-      <%= link_to 'Log out', destroy_user_session_path, method: 'delete' %>
-    <% else %>
-      <%= link_to 'Log in', new_user_session_path %>
-      <%= link_to 'Sign up', new_user_registration_path  %>
-    <% end %>
-    
-    <%= yield %>
+    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <%= link_to root_path, class: 'navbar-item' do %>
+          <div class="title is-4">Private Events</div>
+        <% end %>
+
+      </div>
+
+      <div class="navbar-menu">
+        <div class="navbar-end">
+          <div class="field is-grouped">
+            <% if user_signed_in? %>
+              <p class="control">
+                <%= link_to 'New Post', new_event_path, class: 'button is-info is-inverted' %>
+              </p>
+
+              <div class="dropdown is-hoverable is-right">
+                <div class="dropdown-trigger">
+                  <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                    <span>Hi, <%= current_user.username %></span>
+                    <span class="icon is-small">
+                      <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    </span>
+                  </button>
+                </div>
+
+                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                  <div class="dropdown-content">
+                    <%= link_to 'My Profile', "/user/events/#{current_user.id}", class: 'dropdown-item' %>
+                    <%= link_to 'Edit account', edit_user_registration_path, class: 'dropdown-item' %>
+                    <hr class="dropdown-divider">
+                    <%= link_to 'Sign Out', destroy_user_session_path, method: 'delete', class: 'dropdown-item' %>
+                  </div>
+                </div>
+              </div>
+            <% else %>
+              <div class="navbar-item">
+                <div class="buttons">
+                  <%= link_to 'Log In', new_user_session_path, class: 'button is-light' %>
+                  <%= link_to 'Sign Up', new_user_registration_path, class: 'button is-light' %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+<div class="box">
+  <%= yield %>
+
+</div>
+
   </body>
 </html>

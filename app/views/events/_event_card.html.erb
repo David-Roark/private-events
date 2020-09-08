@@ -1,24 +1,39 @@
-<div class="container">
-  <div class="title is-3">
-    <%= link_to @event.name_event, event_path(@event) %>
-  </div>
-  <div class="box">
-    <div class="title is-5">Creator</div>
-    <p><%= @event.creator.username %></p>
-    <div class="title is-5">Promotion</div>
-    <p><%= @event.promotion %></p>
-    <div class="title is-5">Description</div>
-    <p><%= @event.description[0..100] %><%= '...' if  @event.description.size > 100 %></p>
-    <div class="title is-5">Time</div>
-    <p><%= @event.time %></p>
-    <div class="title is-5">Date</div>
-    <p><%= @event.date %></p>
-    <div class="title is-5">Location</div>
-    <p><%= @event.localtion %></p>
-    <div class="title is-5">Attendees:</div>
-    <p><% @event.attendees.each do |attendee| %>
-        <%= attendee.username %>
+<div class="card">
+  <header class="card-header">
+    <h3 class="card-header-title">
+      <%= link_to @event.name_event, event_path(@event) %>
+    </h3>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      <p> <strong>Promotion:</strong> <%= @event.promotion %></p>
+      <p> <strong>Description:</strong> <%= @event.description[0..100] %><%= '...' if @event.description.size > 100 %></p>
+      <p> <strong>Time:</strong> <%= @event.time.hour %>:<%= @event.time.min %></p>
+      <p> <strong>Date:</strong> <%= @event.date %></p>
+      <p> <strong>Location:</strong> <%= @event.localtion %></p>
+      <p> <strong>Attendees:</strong> <% @event.attendees.each do |attendee| %>
+                     <%= attendee.username + ', ' %>
+                   <% end %>
+      </p>
+    </div>
+    <div class="level">
+      <div class="level-left"></div>
+      <div class="level-right">
+        <div class="level-item">
+          <% if @event.creator == current_user %>
+            <p>My Event</p>
+          <% else %>
+          Creator: @<%= link_to @event.creator.username, "/user/events/#{@event.creator.id}" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <footer class="card-footer">
+      <% if current_user == @event.creator %>
+      <%= link_to 'Edit', edit_event_path(@event), class: "card-footer-item" %>
+      <%= link_to 'Destroy', event_path(@event), method: :delete, data: { confirm: 'Are you sure?' }, class: "card-footer-item" %>
       <% end %>
-    </p>
+    </footer>
   </div>
+
 </div>
